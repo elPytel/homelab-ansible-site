@@ -13,7 +13,7 @@
 # 'ansible-core': A minimalist language and runtime package containing a set of built-in modules and plugins.
 ansible-core
 
-# 'ansible': A much larger “batteries included” package, which adds a community-curated selection of Ansible Collections for automating a wide variety of devices
+# 'ansible': A much larger "batteries included" package, which adds a community-curated selection of Ansible Collections for automating a wide variety of devices
 #ansible
 
 

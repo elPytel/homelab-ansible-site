@@ -1,3 +1,6 @@
+# Ignore Ansible hosts files
+**/hosts.yml
+
 # .ansible directory
 .ansible/
 

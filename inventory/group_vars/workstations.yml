@@ -1,0 +1,28 @@
+# Group variables for workstations
+packages:
+  - vim
+  - nala
+  - aptitude
+  - git
+  - curl
+  - wget
+  - tmux
+  - cron
+  - entr
+  - vlc
+  - gimp
+  - gparted
+  - p7zip-full
+  - cmatrix
+  - odt2txt
+  - grsync
+  - htop
+  - cbonsai
+
+snap_packages:
+  - tpad
+  - mission-center
+  - code
+
+
+ranger_devicons_enabled: false
