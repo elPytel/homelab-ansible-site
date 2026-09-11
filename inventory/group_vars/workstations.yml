@@ -1,3 +1,33 @@
+---
+# ============================================
+# USERS
+# ============================================
+
+users:
+  - name: pytel
+    password: ''
+    update_password: on_create
+    groups:
+      - sudo
+
+# ============================================
+# SSH KEYS
+# ============================================
+
+ssh_keys_exclusive: false
+ssh_keys_state: present
+
+ssh_keys_authorized:
+  - user: ansible
+    key_owners:
+      - ansible
+
+  - user: pytel
+    key_owners:
+      - jaroslav.korner
+
+update_packages_autoremove: true
+
 # Group variables for workstations
 packages:
   - vim

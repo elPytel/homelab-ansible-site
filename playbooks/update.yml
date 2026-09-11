@@ -1,0 +1,7 @@
+---
+- name: Run system update on all hosts
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - role: ansible-role-update-packages

@@ -1,0 +1,9 @@
+[submodule "roles/ansible-role-ntp-configuration"]
+	path = roles/ansible-role-ntp-configuration
+	url = https://gitlab.tul.cz/ansible-tul/ansible-collections/ansible-role-ntp-configuration.git
+[submodule "roles/ansible-role-update-packages"]
+	path = roles/ansible-role-update-packages
+	url = https://gitlab.tul.cz/ansible-tul/ansible-collections/ansible-role-update-packages.git
+[submodule "roles/ansible-role-fail2ban"]
+	path = roles/ansible-role-fail2ban
+	url = https://gitlab.tul.cz/ansible-tul/ansible-collections/ansible-role-fail2ban.git

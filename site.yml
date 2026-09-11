@@ -1,4 +1,23 @@
 ### The playbook for defining the state of the Ansible site
-# This playbook should import all playbooks that are together meant to define the state
+# This playbook should import all playbooks that together define the state
 # of this Ansible site.
-# The imported playbooks must be idempotent as site.yml may be run repeatedly for periodic remediation.
+# The imported playbooks must be idempotent because site.yml may be run
+# repeatedly for periodic remediation.
+
+---
+- name: Správa uzelů v prostředí Staging
+  hosts: hosts
+  become: true
+
+  roles:
+    - role: robertdebock.users
+      when: users is defined
+
+    - role: ansible-suite.ssh-keys
+      when: ssh_keys_authorized is defined
+
+    - role: ansible-role-ntp-configuration
+      when: ntp_configuration_ntp_servers is defined
+
+    - role: ansible-tul.fail2ban
+      when: fail2ban_enabled is defined and fail2ban_enabled
