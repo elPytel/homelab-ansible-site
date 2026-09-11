@@ -1,0 +1,67 @@
+#!/bin/bash
+
+### Ensures the 'jq' command is present
+# It checks for the 'jq' command, and, if not found,
+# downloads a standalone binary from the official repository.
+# Supports only Linux OS and the amd64, i386, arm64 and armhf architectures.
+
+
+## Enable stricter execution
+set -eu -o pipefail
+
+
+## Activate the project shell environment
+# shellcheck disable=SC1091
+source "$(dirname "$(readlink -f "$0")")/activate"
+
+
+## Define basic variables
+
+# the command
+COMMAND='jq'
+
+
+## Exit if command is found
+command -v "$COMMAND" > /dev/null && exit 0
+
+
+## Define additional variables for download and perform checks
+
+# the version of the command
+VERSION="1.8.1"
+
+# the download target
+TARGET="$ANSIBLESITE_EXTERNAL_BIN/$COMMAND"
+
+# the OS
+if [[ "$(uname -s)" != 'Linux' ]]; then
+    echo "$0: Unsupported OS. Install '$COMMAND' manually." >&2
+    exit 1
+fi
+
+# the architecture
+case "$(uname -m)" in
+    x86_64)     ARCH="amd64"    ;;
+    i386|i686)  ARCH="i386"     ;;
+    aarch64)    ARCH="arm64"    ;;
+    armv7l)     ARCH="armhf"    ;;
+    *)          
+        echo "$0: Unsupported architecture. Install '$COMMAND' manually." >&2
+        exit 1
+        ;;
+esac
+
+# the download URL
+DOWNLOAD_URL="https://github.com/jqlang/jq/releases/download/jq-$VERSION/jq-linux-$ARCH"
+
+
+## Download the standalone binary
+
+# ensure parent directory exists for the download target
+mkdir -p "$(dirname "$TARGET")"
+
+# download the binary file
+download-file "$DOWNLOAD_URL" "$TARGET"
+
+# make the binary file executable
+chmod +x "$TARGET"

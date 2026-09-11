@@ -1,0 +1,46 @@
+#!/bin/bash
+
+### Installs Ansible collections and roles using Ansible Galaxy
+# Performs the following actions:
+#   - installs and/or upgrades Ansible collections from 'requirements.yml'
+#   - reinstalls Ansible roles from 'requirements.yml',
+#     as installing and/or upgrading only changed roles is not possible
+#   - if venv of the workspace is active, calls 'install-pip-deps'
+#     to install PIP dependencies required by collections and roles
+
+
+## Enable stricter execution
+set -eu -o pipefail
+
+
+## Activate the project shell environment
+# shellcheck disable=SC1091
+source "$(dirname "$(readlink -f "$0")")/activate"
+
+
+## Define variables
+REQUIREMENTS="$ANSIBLESITE/requirements.yml"
+
+
+## Install collections and roles
+
+# install collections
+ansible-galaxy collection install -r "$REQUIREMENTS" --upgrade
+
+# install roles
+ansible-galaxy role install -r "$REQUIREMENTS" --force
+
+
+## Install PIP dependencies of collections and roles
+
+# only install if enabled and the active venv is the venv of the workspace
+if [[
+        "${ANSIBLESITE_INSTALL_PIP_DEPS:-0}" -eq 1 && \
+        "${VIRTUAL_ENV+x}" && "$VIRTUAL_ENV" = "$(realpath "$ANSIBLESITE_VENV" 2> /dev/null || true)" \
+    ]]; then
+
+    # call 'install-pip-deps' to install PIP dependencies
+    # of collections and roles
+    install-pip-deps
+
+fi

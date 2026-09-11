@@ -1,0 +1,22 @@
+# .ansible directory
+.ansible/
+
+# dotenv local files
+.env.local
+.env.*.local
+
+# Python venv
+.venv/
+
+# External bin directory
+external_bin/
+
+# External collections and roles installed with Ansible Galaxy
+external_collections/
+external_roles/
+
+# Galaxy token
+galaxy_token
+
+# Vault password
+.vault_pass

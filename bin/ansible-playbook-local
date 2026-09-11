@@ -1,0 +1,11 @@
+#!/bin/bash
+
+### Runs 'ansible-playbook' with local connection and hostname limit for the current hostname and 'localhost'
+
+
+## Enable stricter execution
+set -eu -o pipefail
+
+
+## Execute ansible-playbook with added parameters
+exec ansible-playbook --connection local --limit "$(hostname)",localhost "$@"
