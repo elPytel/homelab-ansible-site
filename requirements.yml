@@ -8,6 +8,15 @@ collections:
   - ansible.posix
   - community.general
 
-
 ## Roles requirements
-roles: []
+roles:
+  - name: robertdebock.users
+    version: 6.1.8
+  - name: ansible-suite.ssh-keys
+    src: git+https://github.com/ansible-suite/ansible-role-ssh-keys.git
+  - name: ansible-tul.openssh
+    src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-openssh.git
+  - name: ansible-tul.ntp
+    src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-ntp.git
+  - name: ansible-tul.fail2ban
+    src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-fail2ban.git

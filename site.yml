@@ -16,7 +16,7 @@
     - role: ansible-suite.ssh-keys
       when: ssh_keys_authorized is defined
 
-    - role: ansible-role-ntp-configuration
+    - role: ansible-tul.ntp
       when: ntp_configuration_ntp_servers is defined
 
     - role: ansible-tul.fail2ban

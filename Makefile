@@ -13,6 +13,11 @@ RESET  := $(shell printf '\033[0m')
 
 .PHONY: yamllint ansible-lint ansible-playbook-syntax-check lint activate-venv deactivate-venv
 
+install: requirements.txt
+	@printf "$(YELLOW)Installing dependencies...$(RESET)\n"
+	
+	@touch $@
+
 yamllint:
 	@printf "$(YELLOW)Running yamllint...$(RESET)\n"
 	@find . \( -path './.ansible' -o -path './.venv' \) -prune -o \

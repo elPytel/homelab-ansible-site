@@ -1,0 +1,20 @@
+[local]
+
+[workstations]
+x220 ansible_host=192.168.1.31 ansible_user=ansible
+Asus ansible_host=192.168.1.34 ansible_user=ansible
+Dell-Latitude_5450 ansible_host=192.168.1.67 ansible_user=ansible
+
+[n900]
+N900 ansible_host=192.168.1.51 ansible_user=user
+
+[servers]
+Zalman ansible_host=192.168.1.100 ansible_user=ansible
+Bazzite ansible_host=192.168.1.84 ansible_user=ansible
+Docker-runner ansible_host=192.168.1.88 ansible_user=ansible
+
+[hosts:children]
+local
+workstations
+n900
+servers

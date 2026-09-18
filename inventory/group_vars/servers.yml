@@ -2,7 +2,7 @@
 # NTP SERVERS
 # ============================================
 
-ntp_config_ntp_servers:
+ntp_configuration_ntp_servers:
   - tik.cesnet.cz
   - tak.cesnet.cz
   - ntp.nic.cz

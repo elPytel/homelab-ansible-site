@@ -32,3 +32,9 @@ Spuštění playbooku s omezením na hostitele `Zalman`:
 ```bash
 ansible-playbook site.yml --limit Zalman
 ```
+
+## Vizualizace 
+
+```bash
+ansible-inventory --graph
+```
