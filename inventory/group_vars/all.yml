@@ -34,7 +34,23 @@ ssh_keys_authorized:
     key_owners:
       - jaroslav.korner
 
-update_packages_autoremove: true
+# ============================================
+# UPDATE PACKAGES
+# ============================================
+
+# Supported values: manual, cache_only, unattended
+system_update_mode: unattended
+
+# needrestart behavior on Debian based systems
+# Options: a (auto) l (list) i (interactive)
+system_update_debian_needrestart_enabled: true
+system_update_debian_needrestart_mode: "a"
+
+# List of allowed origins for unattended upgrades
+system_update_unattended_origins:
+  - "${distro_id}:${distro_codename}"
+  - "${distro_id}:${distro_codename}-security"
+  - "${distro_id}:${distro_codename}-updates"
 
 # ============================================
 # PACKAGES

@@ -1,4 +1,14 @@
 # ============================================
+# UPDATE PACKAGES
+# ============================================
+
+# Package cleanup and reboot policy for unattended updates.
+system_update_remove_unused_dependencies: true
+system_update_automatic_reboot: true
+
+system_update_automatic_reboot_time: "02:00"
+
+# ============================================
 # NTP SERVERS
 # ============================================
 

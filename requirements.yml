@@ -20,3 +20,7 @@ roles:
     src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-ntp.git
   - name: ansible-tul.fail2ban
     src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-fail2ban.git
+  - name: ansible-tul.update-packages
+    src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-update-packages.git
+  - name: ansible-tul.automatic-updates
+    src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-automatic-updates.git
