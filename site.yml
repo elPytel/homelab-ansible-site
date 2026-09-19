@@ -21,3 +21,5 @@
 
     - role: ansible-tul.fail2ban
       when: fail2ban_enabled is defined and fail2ban_enabled
+    
+    - role: ansible-tul.automatic-updates

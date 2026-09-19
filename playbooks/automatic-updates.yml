@@ -1,0 +1,7 @@
+---
+- name: Set up automatic updates on all hosts
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - role: ansible-tul.automatic-updates
