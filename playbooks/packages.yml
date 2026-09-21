@@ -1,0 +1,7 @@
+---
+- name: Test package management
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - ansible-suite.packages

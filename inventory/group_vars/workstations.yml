@@ -15,9 +15,16 @@ ssh_keys_authorized:
     key_owners:
       - jaroslav.korner
 
+# ============================================
+# One-time system updates
+# ============================================
+
 update_packages_autoremove: true
 
-# Group variables for workstations
+# ============================================
+# PACKAGES
+# ============================================
+
 packages:
   - vim
   - nala
@@ -42,6 +49,5 @@ snap_packages:
   - tpad
   - mission-center
   - code
-
 
 ranger_devicons_enabled: false

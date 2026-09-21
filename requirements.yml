@@ -14,6 +14,8 @@ roles:
     version: 6.1.8
   - name: ansible-suite.ssh-keys
     src: git+https://github.com/ansible-suite/ansible-role-ssh-keys.git
+  - name: ansible-suite.packages
+    src: git+https://github.com/ansible-suite/ansible-role-packages.git
   - name: ansible-tul.openssh
     src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-openssh.git
   - name: ansible-tul.ntp

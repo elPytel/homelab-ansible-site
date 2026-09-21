@@ -16,3 +16,18 @@ ntp_configuration_ntp_servers:
   - tik.cesnet.cz
   - tak.cesnet.cz
   - ntp.nic.cz
+
+# ============================================
+# PACKAGES
+# ============================================
+
+packages:
+  - git
+
+packages_remove:
+  - telnet
+  - avahi-daemon
+  - modemmanager
+  - rsh-client
+  - rsh-server
+  - rlogin
