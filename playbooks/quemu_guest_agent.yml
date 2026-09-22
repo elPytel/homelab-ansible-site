@@ -1,0 +1,10 @@
+---
+- name: Instalace QEMU Guest Agent (Proxmox Tools)
+  hosts: VMs
+  become: true
+
+  vars:
+    qemu_guest_agent_enabled: true
+
+  roles:
+    - ansible-suite.qemu_guest_agent

@@ -13,7 +13,7 @@
     - role: robertdebock.users
       when: users is defined
 
-    - role: ansible-suite.ssh-keys
+    - role: ansible-suite.ssh_keys
       when: ssh_keys_authorized is defined
 
     - role: ansible-tul.ntp
@@ -22,4 +22,4 @@
     - role: ansible-tul.fail2ban
       when: fail2ban_enabled is defined and fail2ban_enabled
 
-    - role: ansible-tul.automatic-updates
+    - role: ansible-tul.automatic_updates
