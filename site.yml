@@ -5,7 +5,7 @@
 # repeatedly for periodic remediation.
 
 ---
-- name: Správa uzelů v prostředí Staging
+- name: Správa uzelů
   hosts: hosts
   become: true
 
@@ -21,5 +21,5 @@
 
     - role: ansible-tul.fail2ban
       when: fail2ban_enabled is defined and fail2ban_enabled
-    
+
     - role: ansible-tul.automatic-updates

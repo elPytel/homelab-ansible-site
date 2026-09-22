@@ -1,3 +1,5 @@
+---
+
 ### The Ansible Galaxy requirements file
 # Specifies the collections and roles that should be installed
 # in this Ansible workspace.
@@ -12,17 +14,21 @@ collections:
 roles:
   - name: robertdebock.users
     version: 6.1.8
-  - name: ansible-suite.ssh-keys
+  - name: ansible-suite.ssh_keys
     src: git+https://github.com/ansible-suite/ansible-role-ssh-keys.git
   - name: ansible-suite.packages
     src: git+https://github.com/ansible-suite/ansible-role-packages.git
+  - name: ansible-suite.qemu_guest_agent
+    src: git+https://github.com/ansible-suite/ansible-role-qemu-guest-agent.git
+  - name: ansible-suite.smb_mounts
+    src: git+https://github.com/ansible-suite/ansible-role-smb-mounts.git
   - name: ansible-tul.openssh
     src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-openssh.git
   - name: ansible-tul.ntp
     src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-ntp.git
   - name: ansible-tul.fail2ban
     src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-fail2ban.git
-  - name: ansible-tul.update-packages
+  - name: ansible-tul.update_packages
     src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-update-packages.git
-  - name: ansible-tul.automatic-updates
+  - name: ansible-tul.automatic_updates
     src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-automatic-updates.git

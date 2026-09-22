@@ -4,4 +4,4 @@
   hosts: all
   become: true
   roles:
-    - ansible-role-fail2ban
+    - ansible-tul.fail2ban
