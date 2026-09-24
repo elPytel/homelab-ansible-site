@@ -1,0 +1,8 @@
+---
+- name: Mount SMB shares
+  hosts: workstations
+  become: true
+  gather_facts: true
+
+  roles:
+    - ansible-suite.smb_mounts

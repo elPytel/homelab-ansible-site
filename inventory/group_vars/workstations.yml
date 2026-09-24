@@ -44,6 +44,7 @@ packages:
   - grsync
   - htop
   - cbonsai
+  - ripgrep
 
 snap_packages:
   - tpad
@@ -51,3 +52,43 @@ snap_packages:
   - code
 
 ranger_devicons_enabled: false
+
+# ============================================
+# SMB MOUNTS
+# ============================================
+
+smb_shares:
+  - name: "Data"
+    mount_point: "/mnt/data"
+    share_path: "//192.168.1.100/data"
+    username: "smbuser"
+    password: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      63363061616634653839306635393861643535336334336564346335666363623565386335373263
+      3938343966666265393066353631613234313663386138630a663438306333663731656230363832
+      31613139353933323565356464663731646561663330393163616563353139623133346562346239
+      3233386362336164360a343731643265323839313636613766336165633661646461623862333366
+      3539
+    uid: "root"
+    gid: "smb_share_users"
+    dir_mode: "0770"
+    file_mode: "0660"
+    allowed_users:
+      - pytel
+
+  - name: "Movies"
+    mount_point: "/mnt/movies"
+    share_path: "//192.168.1.100/movies"
+    username: "smbuser"
+    password: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      63363061616634653839306635393861643535336334336564346335666363623565386335373263
+      3938343966666265393066353631613234313663386138630a663438306333663731656230363832
+      31613139353933323565356464663731646561663330393163616563353139623133346562346239
+      3233386362336164360a343731643265323839313636613766336165633661646461623862333366
+      3539
+    uid: "root"
+    gid: "root"
+    dir_mode: "0755"
+    file_mode: "0644"
+    # allowed_users is omitted here. Access is read-only for everyone based on modes.
