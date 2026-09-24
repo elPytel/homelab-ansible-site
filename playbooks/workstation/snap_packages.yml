@@ -1,0 +1,4 @@
+- name: Install Snap packages
+  hosts: workstations
+  roles:
+    - role: ansible-suite.snap_packages
