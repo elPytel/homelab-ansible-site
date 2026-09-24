@@ -24,6 +24,10 @@ roles:
     src: git+https://github.com/ansible-suite/ansible-role-smb-mounts.git
   - name: ansible-suite.deb_packages
     src: git+https://github.com/ansible-suite/ansible-role-deb_packages.git
+  - name: ansible-suite.apt_thirdparty
+    src: git+https://github.com/ansible-suite/ansible-role-apt_thirdparty.git
+  - name: ansible-suite.snap_packages
+    src: git+https://github.com/ansible-suite/ansible-role-snap_packages.git
   - name: ansible-tul.openssh
     src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-openssh.git
   - name: ansible-tul.ntp

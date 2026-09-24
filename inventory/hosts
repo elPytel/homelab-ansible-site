@@ -5,7 +5,7 @@ localhost ansible_connection=local ansible_user=ansible
 p330 ansible_host=192.168.1.17 ansible_user=ansible
 x220 ansible_host=192.168.1.31 ansible_user=ansible
 Asus ansible_host=192.168.1.34 ansible_user=ansible
-Dell-Latitude_5450 ansible_host=192.168.1.67 ansible_user=ansible
+Dell_5450 ansible_host=192.168.1.67 ansible_user=ansible
 
 [n900]
 N900 ansible_host=192.168.1.51 ansible_user=user
