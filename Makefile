@@ -44,6 +44,11 @@ LINT := Run all linting checks (yamllint, ansible-lint, and ansible-playbook syn
 lint: yamllint ansible-lint ansible-playbook-syntax-check
 	@printf "$(GREEN)All linting checks passed.$(RESET)\n"
 
+VAULT-PASS:=Generate .vault_pass file for Ansible Vault.
+.vault_pass:
+	@printf "$(YELLOW)Generating .vault_pass file...$(RESET)\n"
+	@bin/generate_vault_pass.sh
+
 SETUP-VENV := setup-venv - Set up the virtual environment and install Python dependencies.
 .venv/.setup-complete: $(PYTHON_REQUIREMENTS) bin/setup-venv
 	@printf "$(YELLOW)Setting up the virtual environment...$(RESET)\n"
