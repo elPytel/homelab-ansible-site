@@ -1,5 +1,5 @@
 ---
-- name: Test package management
+- name: Install and manage packages on all hosts
   hosts: all
   become: true
   gather_facts: true
