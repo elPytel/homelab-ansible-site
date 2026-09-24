@@ -22,6 +22,8 @@ roles:
     src: git+https://github.com/ansible-suite/ansible-role-qemu-guest-agent.git
   - name: ansible-suite.smb_mounts
     src: git+https://github.com/ansible-suite/ansible-role-smb-mounts.git
+  - name: ansible-suite.deb_packages
+    src: git+https://github.com/ansible-suite/ansible-role-deb_packages.git
   - name: ansible-tul.openssh
     src: git+git@gitlab.tul.cz:ansible-tul/ansible-collections/ansible-role-openssh.git
   - name: ansible-tul.ntp

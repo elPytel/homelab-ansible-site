@@ -1,0 +1,10 @@
+---
+deb_packages:
+  1password:
+    url: https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb
+
+# Use a persistent directory to reuse downloaded packages between playbook runs.
+deb_packages_download_dir: /home/pytel/Stažené/deb_packages
+
+# Set to true only when the automatically created temporary directory should be removed.
+deb_packages_cleanup: false

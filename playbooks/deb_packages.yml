@@ -1,0 +1,8 @@
+---
+- name: Install Debian packages from the list in group_vars/workstations.yml
+  hosts: workstations
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: ansible-suite.deb_packages
