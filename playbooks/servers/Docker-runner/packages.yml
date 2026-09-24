@@ -1,0 +1,7 @@
+---
+- name: Install and manage packages on all hosts
+  hosts: Docker-runner
+  become: true
+  gather_facts: true
+  roles:
+    - ansible-suite.packages

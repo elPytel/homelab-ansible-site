@@ -1,0 +1,8 @@
+---
+packages:
+  - vim
+  - git
+  - curl
+  - wget
+  - cron
+  - entr

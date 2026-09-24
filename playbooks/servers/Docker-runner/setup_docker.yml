@@ -1,0 +1,27 @@
+---
+- name: Instalace Dockeru na čistý Debian
+  hosts: Docker-runner
+  become: true
+  
+  roles:
+    - role: ansible-suite.apt_thirdparty
+      vars:
+        apt_thirdparty_repo_name: docker
+        apt_thirdparty_repo_url: https://download.docker.com/linux/debian
+        apt_thirdparty_repo_key_url: https://download.docker.com/linux/debian/gpg
+        apt_thirdparty_repo_format: deb822
+        apt_thirdparty_repo_suite: "{{ ansible_facts['distribution_release'] }}"
+        apt_thirdparty_repo_components:
+          - stable
+        apt_thirdparty_pkg: 
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+
+  tasks:
+    - name: Přidání uživatele ansible do skupiny docker
+      ansible.builtin.user:
+        name: ansible
+        groups: docker
+        append: yes

@@ -9,6 +9,7 @@
 collections:
   - ansible.posix
   - community.general
+  - community.docker
 
 ## Roles requirements
 roles:

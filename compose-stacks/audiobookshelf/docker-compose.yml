@@ -1,0 +1,18 @@
+services:
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    container_name: audiobookshelf
+    environment:
+      - PUID=1106  # Unikátní UID vyhrazené pro Audiobookshelf
+      - PGID=2000  # Společná skupina media_shared pro přístup na disk
+      - TZ=Europe/Prague
+    ports:
+      - 13378:80
+    volumes:
+      # Konfigurace a metadata doporučuji nechat na lokálním (rychlejším) disku Docker-runneru
+      - /opt/docker-stacks/audiobookshelf/config:/config
+      - /opt/docker-stacks/audiobookshelf/metadata:/metadata
+      # Zde je to bezpečnostní kouzlo - připojujeme pouze vybrané podsložky z SMB:
+      - "/mnt/data/Audio knihy:/audiobooks"
+      - "/mnt/data/Podcasts:/podcasts"
+    restart: unless-stopped

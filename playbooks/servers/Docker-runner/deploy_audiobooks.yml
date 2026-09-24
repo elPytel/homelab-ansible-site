@@ -1,0 +1,35 @@
+---
+- name: Nasazení Audiobookshelf stacku
+  hosts: Docker-runner
+  become: true
+  
+  tasks:
+    - name: Vytvoření adresářů pro Audiobookshelf s SGID bitem
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: 1106
+        group: 2000
+        mode: '2775'
+      loop:
+        - /mnt/data/docker/config/audiobookshelf
+        - /mnt/data/docker/metadata/audiobookshelf
+        - "/mnt/data/Audio knihy"
+        - "/mnt/data/Podcasts"
+
+    - name: Vytvoření systémové složky pro compose stacky
+      file:
+        path: /opt/docker-stacks/audiobookshelf
+        state: directory
+        owner: ansible
+        group: ansible
+
+    - name: Kopírování docker-compose.yml na server
+      copy:
+        src: ../../../compose-stacks/audiobookshelf/docker-compose.yml
+        dest: /opt/docker-stacks/audiobookshelf/docker-compose.yml
+
+    - name: Spuštění kontejneru přes Docker Compose
+      community.docker.docker_compose_v2:
+        project_src: /opt/docker-stacks/audiobookshelf
+        state: present
