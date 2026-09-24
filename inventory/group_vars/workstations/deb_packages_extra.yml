@@ -2,6 +2,9 @@
 deb_packages:
   1password:
     url: https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb
+  Obsidian:
+    url: https://github.com/obsidianmd/obsidian-releases/releases/download/v1.13.7/obsidian_1.13.7_amd64.deb
+    version: '1.13.7'
 
 # Use a persistent directory to reuse downloaded packages between playbook runs.
 deb_packages_download_dir: /home/pytel/Stažené/deb_packages
