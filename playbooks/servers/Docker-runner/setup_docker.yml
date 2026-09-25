@@ -25,3 +25,18 @@
         name: ansible
         groups: docker
         append: yes
+  
+    - name: Vytvoření systemd drop-in adresáře pro Docker
+      ansible.builtin.file:
+        path: /etc/systemd/system/docker.service.d
+        state: directory
+        mode: '0755'
+
+    - name: Zajistit, že Docker počká na připojení /mnt/data
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/docker.service.d/wait-for-mnt.conf
+        content: |
+          [Unit]
+          RequiresMountsFor=/mnt/data
+        mode: '0644'
+      notify: Restart Docker

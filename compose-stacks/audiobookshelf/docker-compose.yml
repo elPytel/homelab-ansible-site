@@ -15,4 +15,11 @@ services:
       # Zde je to bezpečnostní kouzlo - připojujeme pouze vybrané podsložky z SMB:
       - "/mnt/data/Audio knihy:/audiobooks"
       - "/mnt/data/Podcasts:/podcasts"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2048M
+        reservations:
+          memory: 256M
     restart: unless-stopped

@@ -17,6 +17,7 @@ smb_shares:
       3539
     uid: "root"
     gid: "media_shared"
+    group_id: 2000
     dir_mode: "0770"
     file_mode: "0660"
     allowed_users:

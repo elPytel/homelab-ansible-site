@@ -12,8 +12,8 @@
         group: 2000
         mode: '2775'
       loop:
-        - /mnt/data/docker/config/audiobookshelf
-        - /mnt/data/docker/metadata/audiobookshelf
+        - /opt/docker-stacks/audiobookshelf/config
+        - /opt/docker-stacks/audiobookshelf/metadata
         - "/mnt/data/Audio knihy"
         - "/mnt/data/Podcasts"
 

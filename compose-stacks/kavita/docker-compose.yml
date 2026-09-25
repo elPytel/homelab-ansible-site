@@ -1,0 +1,21 @@
+services:
+  kavita:
+    image: ghcr.io/kareadita/kavita:latest
+    container_name: kavita
+    environment:
+      - PUID=1107  # Unikátní UID vyhrazené pro Kavitu
+      - PGID=2000  # Společná skupina media_shared pro přístup na SMB disk
+      - TZ=Europe/Prague
+    ports:
+      - 5000:5000
+    volumes:
+      - /opt/docker-stacks/kavita/config:/kavita/config
+      - "/mnt/data/Knihy:/books"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2048M
+        reservations:
+          memory: 256M
+    restart: unless-stopped

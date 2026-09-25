@@ -1,0 +1,40 @@
+---
+- name: Nasazení Kavita stacku
+  hosts: Docker-runner
+  become: true
+
+  tasks:
+    - name: Kontrola, že je SMB disk /mnt/data připojený
+      ansible.builtin.command: mountpoint -q /mnt/data
+      changed_when: false
+    
+    - name: Nastavení práv a SGID bitu na složce Knihy na SMB
+      ansible.builtin.file:
+        path: "/mnt/data/Knihy"
+        state: directory
+        owner: 1107
+        group: 2000
+        mode: '2775'
+
+    - name: Vytvoření lokální složky pro compose stack a konfiguraci
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: 1107
+        group: 2000
+        mode: '0775'
+      loop:
+        - /opt/docker-stacks/kavita
+        - /opt/docker-stacks/kavita/config
+
+    - name: Kopírování docker-compose.yml na server
+      ansible.builtin.copy:
+        src: ../../../compose-stacks/kavita/docker-compose.yml
+        dest: /opt/docker-stacks/kavita/docker-compose.yml
+        owner: ansible
+        group: ansible
+
+    - name: Spuštění kontejneru přes Docker Compose
+      community.docker.docker_compose_v2:
+        project_src: /opt/docker-stacks/kavita
+        state: present
