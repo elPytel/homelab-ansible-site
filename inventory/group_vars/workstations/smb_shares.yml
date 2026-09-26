@@ -2,6 +2,7 @@
 # ============================================
 # SMB MOUNTS
 # ============================================
+smb_mount_mode: workstation
 
 smb_shares:
   - name: "Data"
