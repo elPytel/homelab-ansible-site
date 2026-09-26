@@ -3,14 +3,21 @@
   hosts: Docker-runner
   become: true
 
+  vars:
+    stack_name: kavita
+    stack_path: /opt/docker-stacks/kavita
+    source_path: ../../../compose-stacks/kavita
+    data_mount: /mnt/data
+
   tasks:
     - name: Kontrola, že je SMB disk /mnt/data připojený
-      ansible.builtin.command: mountpoint -q /mnt/data
+      ansible.builtin.command:
+        cmd: mountpoint -q "{{ data_mount }}"
       changed_when: false
-    
+
     - name: Nastavení práv a SGID bitu na složce Knihy na SMB
       ansible.builtin.file:
-        path: "/mnt/data/Knihy"
+        path: "{{ data_mount }}/Knihy"
         state: directory
         owner: 1107
         group: 2000
@@ -24,17 +31,39 @@
         group: 2000
         mode: '0775'
       loop:
-        - /opt/docker-stacks/kavita
-        - /opt/docker-stacks/kavita/config
+        - "{{ stack_path }}"
+        - "{{ stack_path }}/config"
 
     - name: Kopírování docker-compose.yml na server
       ansible.builtin.copy:
-        src: ../../../compose-stacks/kavita/docker-compose.yml
-        dest: /opt/docker-stacks/kavita/docker-compose.yml
+        src: "{{ source_path }}/docker-compose.yml"
+        dest: "{{ stack_path }}/docker-compose.yml"
         owner: ansible
         group: ansible
+        mode: '0644'
 
-    - name: Spuštění kontejneru přes Docker Compose
+    - name: Instalace systemd služby
+      ansible.builtin.template:
+        src:  "{{ source_path }}/docker-compose.service.j2"
+        dest: "/etc/systemd/system/{{ stack_name }}.service"
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Reload systemd
+
+    - name: Nasazení Kavita stacku
       community.docker.docker_compose_v2:
-        project_src: /opt/docker-stacks/kavita
+        project_src: "{{ stack_path }}"
         state: present
+
+    - name: Povolení a spuštění Kavita služby
+      ansible.builtin.systemd:
+        name: "{{ stack_name }}.service"
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true

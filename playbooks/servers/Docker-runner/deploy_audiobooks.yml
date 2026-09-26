@@ -2,34 +2,72 @@
 - name: Nasazení Audiobookshelf stacku
   hosts: Docker-runner
   become: true
-  
+
+  vars:
+    stack_name: audiobookshelf
+    stack_path: /opt/docker-stacks/audiobookshelf
+    source_path: ../../../compose-stacks/audiobookshelf
+    data_mount: /mnt/data
+
   tasks:
-    - name: Vytvoření adresářů pro Audiobookshelf s SGID bitem
-      file:
+    - name: Kontrola, že je SMB disk /mnt/data připojený
+      ansible.builtin.command:
+        cmd: mountpoint -q "{{ data_mount }}"
+      changed_when: false
+
+    - name: Nastavení práv a SGID bitu na složkách Audiobookshelf na SMB
+      ansible.builtin.file:
         path: "{{ item }}"
         state: directory
         owner: 1106
         group: 2000
         mode: '2775'
       loop:
-        - /opt/docker-stacks/audiobookshelf/config
-        - /opt/docker-stacks/audiobookshelf/metadata
-        - "/mnt/data/Audio knihy"
-        - "/mnt/data/Podcasts"
+        - "{{ data_mount }}/Audio knihy"
+        - "{{ data_mount }}/Podcasts"
 
-    - name: Vytvoření systémové složky pro compose stacky
-      file:
-        path: /opt/docker-stacks/audiobookshelf
+    - name: Vytvoření lokální složky pro compose stack a konfiguraci
+      ansible.builtin.file:
+        path: "{{ item }}"
         state: directory
-        owner: ansible
-        group: ansible
+        owner: 1106
+        group: 2000
+        mode: '0775'
+      loop:
+        - "{{ stack_path }}"
+        - "{{ stack_path }}/config"
+        - "{{ stack_path }}/metadata"
 
     - name: Kopírování docker-compose.yml na server
-      copy:
-        src: ../../../compose-stacks/audiobookshelf/docker-compose.yml
-        dest: /opt/docker-stacks/audiobookshelf/docker-compose.yml
+      ansible.builtin.copy:
+        src: "{{ source_path }}/docker-compose.yml"
+        dest: "{{ stack_path }}/docker-compose.yml"
+        owner: ansible
+        group: ansible
+        mode: '0644'
 
-    - name: Spuštění kontejneru přes Docker Compose
+    - name: Instalace systemd služby
+      ansible.builtin.template:
+        src: "{{ source_path }}/docker-compose.service.j2"
+        dest: "/etc/systemd/system/{{ stack_name }}.service"
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Reload systemd
+
+    - name: Nasazení Audiobookshelf stacku
       community.docker.docker_compose_v2:
-        project_src: /opt/docker-stacks/audiobookshelf
+        project_src: "{{ stack_path }}"
         state: present
+
+    - name: Povolení a spuštění Audiobookshelf služby
+      ansible.builtin.systemd:
+        name: "{{ stack_name }}.service"
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
