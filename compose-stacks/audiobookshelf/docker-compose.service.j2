@@ -2,7 +2,7 @@
 Description={{ stack_name }} Docker Stack
 
 Requires=docker.service
-After=docker.service network-online.target remote-fs.target
+After=docker.service network-online.target
 Wants=network-online.target
 
 RequiresMountsFor={{ data_mount }}
