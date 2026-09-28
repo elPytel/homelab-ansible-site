@@ -1,0 +1,79 @@
+---
+- name: Nasazení Jellyfin stacku
+  hosts: Docker-runner
+  become: true
+
+  vars:
+    stack_name: jellyfin
+    stack_path: /opt/docker-stacks/jellyfin
+    source_path: ../../../compose-stacks/jellyfin
+    mount:
+      data: /mnt/data
+      series: /mnt/movies
+
+    jellyfin_uid: 1101
+    media_gid: 2000
+
+  tasks:
+
+    - name: Kontrola, že jsou SMB disky připojené
+      ansible.builtin.command:
+        cmd: mountpoint -q "{{ mount_path }}"
+      changed_when: false
+      loop:
+        - "{{ mount.data }}"
+        - "{{ mount.series }}"
+      loop_control:
+        loop_var: mount_path
+        label: "{{ mount_path }}"
+
+    - name: Kontrola dostupnosti Intel GPU
+      ansible.builtin.stat:
+        path: /dev/dri/renderD128
+      register: jellyfin_gpu
+
+    - name: Vytvoření lokálního adresáře Jellyfin stacku
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ jellyfin_uid }}"
+        group: "{{ media_gid }}"
+        mode: '0775'
+      loop:
+        - "{{ stack_path }}"
+        - "{{ stack_path }}/config"
+
+    - name: Kopírování docker-compose.yml
+      ansible.builtin.copy:
+        src: "{{ source_path }}/docker-compose.yml"
+        dest: "{{ stack_path }}/docker-compose.yml"
+        owner: ansible
+        group: ansible
+        mode: '0644'
+
+    - name: Instalace systemd služby
+      ansible.builtin.template:
+        src: "{{ source_path }}/docker-compose.service.j2"
+        dest: "/etc/systemd/system/{{ stack_name }}.service"
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Reload systemd
+
+    - name: Nasazení Jellyfin stacku
+      community.docker.docker_compose_v2:
+        project_src: "{{ stack_path }}"
+        state: present
+
+    - name: Povolení a spuštění Jellyfin služby
+      ansible.builtin.systemd:
+        name: "{{ stack_name }}.service"
+        enabled: true
+        state: started
+
+  handlers:
+
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true

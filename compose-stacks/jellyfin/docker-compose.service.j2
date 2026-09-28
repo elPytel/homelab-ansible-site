@@ -1,0 +1,27 @@
+[Unit]
+
+Description={{ stack_name }} Docker Stack
+
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+RequiresMountsFor={{ mount.data }} {{ mount.series }}
+
+[Service]
+
+Type=oneshot
+RemainAfterExit=yes
+
+WorkingDirectory={{ stack_path }}
+
+ExecStartPre=/bin/sh -c 'mountpoint -q {{ mount.data }} || mount {{ mount.data }}'
+ExecStartPre=/bin/sh -c 'mountpoint -q {{ mount.series }} || mount {{ mount.series }}'
+
+ExecStart=/usr/bin/docker compose -f {{ stack_path }}/docker-compose.yml up -d
+
+TimeoutStartSec=0
+
+[Install]
+
+WantedBy=multi-user.target

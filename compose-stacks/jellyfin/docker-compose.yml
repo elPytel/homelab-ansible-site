@@ -1,0 +1,29 @@
+services:
+
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+
+    environment:
+      - PUID=1101
+      - PGID=2000
+      - TZ=Europe/Prague
+
+    ports:
+      - "8096:8096"
+
+    volumes:
+      # Konfigurace a metadata lokálně
+      - /opt/docker-stacks/jellyfin/config:/config
+
+      # Nové filmy na RAIDZ1
+      - /mnt/data/Seriály:/series:ro
+      - /mnt/data/Filmy:/movies:ro
+
+      # Stávající filmy na mergerfs
+      - /mnt/movies:/movies-archive:ro
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+    restart: unless-stopped
