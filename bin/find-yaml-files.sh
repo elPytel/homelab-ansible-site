@@ -4,19 +4,20 @@
 
 set -euo pipefail
 
-# This script finds all YAML files in the repository, excluding certain directories.
+print0=false
 if [[ "${1:-}" == "--print0" ]]; then
-	find . \( -path './.ansible' -o -path './.venv' \) -prune -o \
-		-type f \( -name '*.yml' -o -name '*.yaml' \) -print0
-	exit 0
+	print0=true
+	shift
 fi
 
-# If no arguments are provided, print usage and exit with an error code.
-if [[ "$#" -ne 0 ]]; then
-	printf 'Usage: %s [--print0]\n' "$0" >&2
-	exit 2
+if [[ "$#" -eq 0 ]]; then
+	find_args=(. \( -path './.ansible' -o -path './.venv' \) -prune -o)
+else
+	find_args=("$@")
 fi
 
-# Find all YAML files in the repository, excluding certain directories, and print their paths.
-find . \( -path './.ansible' -o -path './.venv' \) -prune -o \
-	-type f \( -name '*.yml' -o -name '*.yaml' \)
+if [[ "$print0" == true ]]; then
+	find "${find_args[@]}" -type f \( -name '*.yml' -o -name '*.yaml' \) -print0
+else
+	find "${find_args[@]}" -type f \( -name '*.yml' -o -name '*.yaml' \)
+fi

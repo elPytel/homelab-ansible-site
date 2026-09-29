@@ -33,11 +33,10 @@ ansible-lint:
 ANSIBLE-PLAYBOOK-SYNTAX-CHECK := Check the syntax of all Ansible playbooks in the repository
 ansible-playbook-syntax-check:
 	@printf "$(YELLOW)Running ansible-playbook syntax check...$(RESET)\n"
-	@find site.yml playbooks -type f \( -name '*.yml' -o -name '*.yaml' \) -print0 | \
-	while IFS= read -r -d '' file; do \
+	@while IFS= read -r -d '' file; do \
 		echo "Checking $$file"; \
 		ansible-playbook --syntax-check "$$file" || exit 1; \
-	done
+	done < <(bin/find-yaml-files.sh --print0 site.yml playbooks)
 
 LINT := Run all linting checks (yaml-lint, ansible-lint, and ansible-playbook syntax check)
 lint: yaml-lint ansible-lint ansible-playbook-syntax-check
@@ -63,18 +62,6 @@ SETUP-GALAXY := setup-galaxy - Install Ansible roles and collections.
 SETUP := Download and install dependencies, set up virtual environment, and prepare the development environment.
 setup: .ansible/.setup-complete
 	@printf "$(GREEN)Setup complete.$(RESET)\n"
-
-output2human_readable:
-	@printf "$(YELLOW)Converting $(REPORT_DIR)/ansible_output.json to human-readable format...$(RESET)\n"
-	@python3 scripts/output2human_readable.py $(REPORT_DIR)/ansible_output.json
-
-$(REPORT_DIR):
-	@mkdir -p $@
-
-play.update_lobsang: | $(REPORT_DIR)
-	@printf "$(YELLOW)Running playbook: ${BLUE}update_lobsang.yml$(RESET)...\n"
-	@ANSIBLE_STDOUT_CALLBACK=json ansible-playbook playbooks/update_lobsang.yml --check > $(REPORT_DIR)/ansible_output.json
-	@ansible-playbook playbooks/update_lobsang.yml --check
 
 CLEAN := Clean build artifacts.
 clean:
