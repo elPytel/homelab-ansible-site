@@ -12,19 +12,18 @@ CYAN   := $(shell printf '\033[0;36m')
 BOLD   := $(shell printf '\033[1m')
 RESET  := $(shell printf '\033[0m')
 
-.PHONY: yamllint ansible-lint ansible-playbook-syntax-check lint setup setup-venv setup-galaxy clean clean-all help
+.PHONY: yaml-lint ansible-lint ansible-playbook-syntax-check lint setup setup-venv setup-galaxy clean clean-all help
 
+ALL := Run all linting checks (yamllint, ansible-lint, and ansible-playbook syntax check)
 all: lint
 
 install: 
 	sudo apt install -y yamllint ansible-lint
 
-YAMLLINT := Run yamllint on all YAML files in the repository
-yamllint:
+YAML-LINT := Run yamllint on all YAML files in the repository
+yaml-lint:
 	@printf "$(YELLOW)Running yamllint...$(RESET)\n"
-	@find . \( -path './.ansible' -o -path './.venv' \) -prune -o \
-		-type f \( -name '*.yml' -o -name '*.yaml' \) -print0 | \
-		xargs -0 -r yamllint
+	@bin/find-yaml-files.sh --print0 | xargs -0 -r yamllint
 
 ANSIBLE-LINT := Run ansible-lint on all Ansible playbooks in the repository
 ansible-lint:
@@ -40,8 +39,8 @@ ansible-playbook-syntax-check:
 		ansible-playbook --syntax-check "$$file" || exit 1; \
 	done
 
-LINT := Run all linting checks (yamllint, ansible-lint, and ansible-playbook syntax check)
-lint: yamllint ansible-lint ansible-playbook-syntax-check
+LINT := Run all linting checks (yaml-lint, ansible-lint, and ansible-playbook syntax check)
+lint: yaml-lint ansible-lint ansible-playbook-syntax-check
 	@printf "$(GREEN)All linting checks passed.$(RESET)\n"
 
 SETUP-VENV := setup-venv - Set up the virtual environment and install Python dependencies.
@@ -86,14 +85,13 @@ clean-all: clean
 
 help:
 	@echo "Usage: make [target]"
+	@echo ""
 	@echo "Targets:"
-	@echo "  all:                   Run all linting checks."
-	@echo "  yamllint:              $(YAMLLINT)"
+	@echo "  all:                   $(ALL)"
+	@echo "  yaml-lint:             $(YAML-LINT)"
 	@echo "  ansible-lint:          $(ANSIBLE-LINT)"
 	@echo "  ansible-playbook-syntax-check: $(ANSIBLE-PLAYBOOK-SYNTAX-CHECK)"
 	@echo "  lint:                  $(LINT)"
 	@echo "  setup:                 $(SETUP)"
-	@echo "  output2human_readable: Convert Ansible JSON output to human-readable format."
-	@echo "  play.update_lobsang:   Run the update_lobsang.yml playbook and save the output to a JSON file."
 	@echo "  clean:                 $(CLEAN)"
 	@echo "  clean-all:             $(CLEAN-ALL)"
