@@ -4,6 +4,8 @@ ssh_keys:
   - owner: ansible
     keys:
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINWebFyGIIc9TlfxDrtY1YFThxkcsi/U2/ou4EiyZQ8C ansible@lobsang
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPahCKJ7pViUqcqZ0WA3XPfi1HD6/5Gcm+4XBEhNPFrE ansible@p330
   - owner: jaroslav.korner
     keys:
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN/9zeREQogC0h1/lCgooV7+DAOKr8iRFPx88SDVBiQk jaroslav.korner@jk-Latitude-5450
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF4OoTKD17YxnLWNgxG2zuMLNEKvEhi18MiyFSRSEtQP pytel@p330

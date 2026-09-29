@@ -1,0 +1,15 @@
+---
+- name: Mount SMB shares
+  hosts: Docker-runner
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+    - name: Vytvořit skupinu media_shared s fixním GID 2000
+      ansible.builtin.group:
+        name: media_shared
+        gid: 2000
+        state: present
+
+  roles:
+    - ansible-suite.smb_mounts

@@ -1,0 +1,14 @@
+- name: Install Signal Desktop (if APT not available in the default repositories)
+  hosts: all
+  become: true
+  roles:
+    - role: ansible-suite.apt_thirdparty
+      vars:
+        apt_thirdparty_repo_name: signal-desktop
+        apt_thirdparty_repo_url: https://updates.signal.org/desktop/apt
+        apt_thirdparty_repo_key_url: https://updates.signal.org/desktop/apt/keys.asc
+        apt_thirdparty_repo_format: deb822
+        apt_thirdparty_repo_suite: xenial
+        apt_thirdparty_repo_components:
+          - main
+        apt_thirdparty_pkg: signal-desktop

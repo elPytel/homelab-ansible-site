@@ -1,0 +1,25 @@
+---
+packages:
+  - vim
+  - nala
+  - aptitude
+  - git
+  - curl
+  - wget
+  - tmux
+  - cron
+  - entr
+  - vlc
+  - gimp
+  - gparted
+  - p7zip-full
+  - cmatrix
+  - odt2txt
+  - grsync
+  - htop
+  - cbonsai
+  - ripgrep
+  - signal-desktop
+  - thunderbird
+  - libreoffice
+  - libreoffice-l10n-cs

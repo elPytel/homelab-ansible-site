@@ -1,6 +1,6 @@
 ---
 - name: Install and manage packages on all hosts
-  hosts: all
+  hosts: Docker-runner
   become: true
   gather_facts: true
   roles:
