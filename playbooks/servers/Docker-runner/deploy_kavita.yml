@@ -21,7 +21,7 @@
         state: directory
         owner: 1107
         group: 2000
-        mode: '2775'
+        mode: "2775"
 
     - name: Vytvoření lokální složky pro compose stack a konfiguraci
       ansible.builtin.file:
@@ -29,7 +29,7 @@
         state: directory
         owner: 1107
         group: 2000
-        mode: '0775'
+        mode: "0775"
       loop:
         - "{{ stack_path }}"
         - "{{ stack_path }}/config"
@@ -40,15 +40,15 @@
         dest: "{{ stack_path }}/docker-compose.yml"
         owner: ansible
         group: ansible
-        mode: '0644'
+        mode: "0644"
 
     - name: Instalace systemd služby
       ansible.builtin.template:
-        src:  "{{ source_path }}/docker-compose.service.j2"
+        src: "{{ source_path }}/docker-compose.service.j2"
         dest: "/etc/systemd/system/{{ stack_name }}.service"
         owner: root
         group: root
-        mode: '0644'
+        mode: "0644"
       notify:
         - Reload systemd
 

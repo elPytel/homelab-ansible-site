@@ -1,3 +1,4 @@
+---
 - name: Install Signal Desktop (if APT not available in the default repositories)
   hosts: all
   become: true

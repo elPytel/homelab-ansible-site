@@ -15,7 +15,6 @@
     media_gid: 2000
 
   tasks:
-
     - name: Kontrola, že jsou SMB disky připojené
       ansible.builtin.command:
         cmd: mountpoint -q "{{ mount_path }}"
@@ -38,7 +37,7 @@
         state: directory
         owner: "{{ jellyfin_uid }}"
         group: "{{ media_gid }}"
-        mode: '0775'
+        mode: "0775"
       loop:
         - "{{ stack_path }}"
         - "{{ stack_path }}/config"
@@ -49,7 +48,7 @@
         dest: "{{ stack_path }}/docker-compose.yml"
         owner: ansible
         group: ansible
-        mode: '0644'
+        mode: "0644"
 
     - name: Instalace systemd služby
       ansible.builtin.template:
@@ -57,7 +56,7 @@
         dest: "/etc/systemd/system/{{ stack_name }}.service"
         owner: root
         group: root
-        mode: '0644'
+        mode: "0644"
       notify:
         - Reload systemd
 
@@ -73,7 +72,6 @@
         state: started
 
   handlers:
-
     - name: Reload systemd
       ansible.builtin.systemd:
         daemon_reload: true

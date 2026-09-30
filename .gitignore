@@ -23,3 +23,6 @@ galaxy_token
 
 # Vault password
 .vault_pass
+
+# make flags
+install

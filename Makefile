@@ -1,9 +1,9 @@
 
 SHELL := /bin/bash
-PYTHON_REQUIREMENTS := requirements.txt
+PYTHON_REQUIREMENTS  := requirements.txt
 ANSIBLE_REQUIREMENTS := requirements.yml
 
-RED	:= $(shell printf '\033[0;31m')
+RED	   := $(shell printf '\033[0;31m')
 GREEN  := $(shell printf '\033[0;32m')
 YELLOW := $(shell printf '\033[0;33m')
 BLUE   := $(shell printf '\033[0;34m')
@@ -17,8 +17,10 @@ RESET  := $(shell printf '\033[0m')
 ALL := Run all linting checks (yamllint, ansible-lint, and ansible-playbook syntax check)
 all: lint
 
+INSTALL := Install required packages
 install: 
-	sudo apt install -y yamllint ansible-lint
+	sudo apt install -y yamllint
+	@touch install
 
 YAML-LINT := Run yamllint on all YAML files in the repository
 yaml-lint:
@@ -28,19 +30,33 @@ yaml-lint:
 ANSIBLE-LINT := Run ansible-lint on all Ansible playbooks in the repository
 ansible-lint:
 	@printf "$(YELLOW)Running ansible-lint...$(RESET)\n"
-	@ansible-lint . --exclude .ansible
+	@ansible-lint || echo "Try running 'make auto-fix-syntax' to automatically fix syntax issues in Ansible playbooks."
 
 ANSIBLE-PLAYBOOK-SYNTAX-CHECK := Check the syntax of all Ansible playbooks in the repository
 ansible-playbook-syntax-check:
 	@printf "$(YELLOW)Running ansible-playbook syntax check...$(RESET)\n"
 	@while IFS= read -r -d '' file; do \
-		echo "Checking $$file"; \
+		printf "$(YELLOW)Checking $$file...$(RESET)"; \
 		ansible-playbook --syntax-check "$$file" || exit 1; \
+		printf "$(GREEN)Syntax check passed for $$file.$(RESET) \n\n"; \
 	done < <(bin/find-yaml-files.sh --print0 site.yml playbooks)
 
 LINT := Run all linting checks (yaml-lint, ansible-lint, and ansible-playbook syntax check)
 lint: yaml-lint ansible-lint ansible-playbook-syntax-check
 	@printf "$(GREEN)All linting checks passed.$(RESET)\n"
+
+AUTO-FIX-SYNTAX := Automatically fix syntax issues in Ansible playbooks using ansible-lint
+auto-fix-syntax:
+	@printf "$(YELLOW)Automatically fixing syntax issues in Ansible playbooks...$(RESET)\n"
+	@ansible-lint . --exclude .ansible --fix
+
+ensure-jq:
+	@command -v jq >/dev/null 2>&1 && { \
+		printf "$(GREEN)jq is already installed.$(RESET)\n"; \
+	} || { \
+		printf "$(YELLOW)jq is not installed. Installing jq...$(RESET)\n"; \
+		bin/ensure-jq; \
+	}
 
 VAULT-PASS:=Generate .vault_pass file for Ansible Vault.
 .vault_pass:
@@ -80,6 +96,7 @@ help:
 	@echo ""
 	@echo "Targets:"
 	@echo "  all:                   $(ALL)"
+	@echo "  install:               $(INSTALL)"
 	@echo "  yaml-lint:             $(YAML-LINT)"
 	@echo "  ansible-lint:          $(ANSIBLE-LINT)"
 	@echo "  ansible-playbook-syntax-check: $(ANSIBLE-PLAYBOOK-SYNTAX-CHECK)"

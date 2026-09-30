@@ -23,7 +23,7 @@ smb_shares:
     file_mode: "0660"
     allowed_users:
       - ansible
-      
+
   - name: "Movies"
     mount_point: "/mnt/movies"
     share_path: "//192.168.1.100/movies"
