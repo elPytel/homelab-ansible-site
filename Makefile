@@ -12,7 +12,8 @@ CYAN   := $(shell printf '\033[0;36m')
 BOLD   := $(shell printf '\033[1m')
 RESET  := $(shell printf '\033[0m')
 
-.PHONY: yaml-lint ansible-lint ansible-playbook-syntax-check lint setup setup-venv setup-galaxy clean clean-all help
+.PHONY: yaml-lint ansible-lint ansible-playbook-syntax-check lint \
+		ensure-jq vault-pass setup setup-venv setup-galaxy clean clean-all help
 
 ALL := Run all linting checks (yamllint, ansible-lint, and ansible-playbook syntax check)
 all: lint
@@ -69,10 +70,12 @@ SETUP-VENV := setup-venv - Set up the virtual environment and install Python dep
 	@bin/setup-venv
 	@touch $@
 
-SETUP-GALAXY := setup-galaxy - Install Ansible roles and collections.
+SETUP-GALAXY := Install Ansible roles and collections.
 .ansible/.setup-complete: .venv/.setup-complete $(ANSIBLE_REQUIREMENTS) bin/setup-galaxy
 	@printf "$(YELLOW)Installing Ansible roles and collections...$(RESET)\n"
-	@bin/setup-galaxy
+	@bin/ansible-galaxy collection install -r "$(ANSIBLE_REQUIREMENTS)" --upgrade
+	@bin/ansible-galaxy role install -r "$(ANSIBLE_REQUIREMENTS)" --force
+	@bin/install-pip-deps
 	@touch $@
 
 SETUP := Download and install dependencies, set up virtual environment, and prepare the development environment.
@@ -82,7 +85,9 @@ setup: .ansible/.setup-complete
 CLEAN := Clean build artifacts.
 clean:
 	@printf "$(YELLOW)Cleaning up...$(RESET)\n"
-	@rm -rf $(REPORT_DIR)
+	@rm install || true
+	@rm -rf .ansible/.setup-complete || true
+	@rm -rf .venv/.setup-complete || true
 
 CLEAN-ALL := Clean all build artifacts and dependencies.
 clean-all: clean
@@ -101,6 +106,7 @@ help:
 	@echo "  ansible-lint:          $(ANSIBLE-LINT)"
 	@echo "  ansible-playbook-syntax-check: $(ANSIBLE-PLAYBOOK-SYNTAX-CHECK)"
 	@echo "  lint:                  $(LINT)"
+	@echo "  auto-fix-syntax:       $(AUTO-FIX-SYNTAX)"
 	@echo "  setup:                 $(SETUP)"
 	@echo "  clean:                 $(CLEAN)"
 	@echo "  clean-all:             $(CLEAN-ALL)"
