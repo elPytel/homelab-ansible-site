@@ -1,3 +1,4 @@
+---
 services:
   audiobookshelf:
     image: ghcr.io/advplyr/audiobookshelf:latest
@@ -9,7 +10,7 @@ services:
     ports:
       - 13378:80
     volumes:
-      # Konfigurace a metadata doporučuji nechat na lokálním (rychlejším) disku Docker-runneru
+      # Konfigurace a metadata doporučuji nechat na lokálním (rychlejším) disku
       - /opt/docker-stacks/audiobookshelf/config:/config
       - /opt/docker-stacks/audiobookshelf/metadata:/metadata
       # Zde je to bezpečnostní kouzlo - připojujeme pouze vybrané podsložky z SMB:
