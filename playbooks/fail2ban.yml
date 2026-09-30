@@ -1,5 +1,4 @@
 ---
-
 - name: Install and configure Fail2Ban
   hosts: all
   become: true

@@ -12,6 +12,10 @@ CYAN   := $(shell printf '\033[0;36m')
 BOLD   := $(shell printf '\033[1m')
 RESET  := $(shell printf '\033[0m')
 
+CHECK_DIR := .syntax-checks
+PLAYBOOKS := $(shell bin/find-yaml-files.sh site.yml playbooks)
+CHECKS := $(addprefix $(CHECK_DIR)/,$(PLAYBOOKS:=.ok))
+
 .PHONY: yaml-lint ansible-lint ansible-playbook-syntax-check lint \
 		ensure-jq vault-pass setup setup-venv setup-galaxy clean clean-all help
 
@@ -33,14 +37,21 @@ ansible-lint:
 	@printf "$(YELLOW)Running ansible-lint...$(RESET)\n"
 	@ansible-lint || echo "Try running 'make auto-fix-syntax' to automatically fix syntax issues in Ansible playbooks."
 
+CHECK_DIR:
+	@mkdir -p $(CHECK_DIR)
+
+$(CHECK_DIR)/%.yml.ok: %.yml
+	@mkdir -p "$(dir $@)"
+	@printf "$(YELLOW)Checking $<...$(RESET)"
+	@ansible-playbook --syntax-check "$<" || { printf "$(RED)Syntax check failed for $<.$(RESET)\n"; exit 1; }
+	@printf "$(GREEN)Syntax check passed for $<.$(RESET) \n\n"
+	@touch "$@"
+
 ANSIBLE-PLAYBOOK-SYNTAX-CHECK := Check the syntax of all Ansible playbooks in the repository
-ansible-playbook-syntax-check:
+ansible-playbook-syntax-check: CHECK_DIR
 	@printf "$(YELLOW)Running ansible-playbook syntax check...$(RESET)\n"
-	@while IFS= read -r -d '' file; do \
-		printf "$(YELLOW)Checking $$file...$(RESET)"; \
-		ansible-playbook --syntax-check "$$file" || exit 1; \
-		printf "$(GREEN)Syntax check passed for $$file.$(RESET) \n\n"; \
-	done < <(bin/find-yaml-files.sh --print0 site.yml playbooks)
+	@$(MAKE) --output-sync=target -j20 $(CHECKS) || { printf "$(RED)Ansible playbook syntax check failed.$(RESET)\n"; exit 1; }
+	@printf "$(GREEN)All Ansible playbook syntax checks passed.$(RESET)\n"
 
 LINT := Run all linting checks (yaml-lint, ansible-lint, and ansible-playbook syntax check)
 lint: yaml-lint ansible-lint ansible-playbook-syntax-check
@@ -88,6 +99,7 @@ clean:
 	@rm install || true
 	@rm -rf .ansible/.setup-complete || true
 	@rm -rf .venv/.setup-complete || true
+	@rm -rf $(CHECK_DIR) || true
 
 CLEAN-ALL := Clean all build artifacts and dependencies.
 clean-all: clean
