@@ -1,0 +1,79 @@
+- name: Nasazeni Homepage stacku
+  hosts: Docker-runner
+  become: true
+
+  vars:
+    stack_name: homepage
+    stack_path: /opt/docker-stacks/homepage
+    source_path: ../../../compose-stacks/homepage
+    # We use stack_path to satisfy the RequiresMountsFor directive in the existing systemd template
+    mount:
+      data: /mnt/data
+      series: /mnt/movies
+
+  tasks:
+    - name: Kontrola, že jsou SMB disky připojené
+      ansible.builtin.command:
+        cmd: mountpoint -q "{{ mount_path }}"
+      changed_when: false
+      loop:
+        - "{{ mount.data }}"
+        - "{{ mount.series }}"
+      loop_control:
+        loop_var: mount_path
+        label: "{{ mount_path }}"
+
+    - name: Vytvoreni lokarni slozky pro compose stack a konfiguraci
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: 1108
+        group: 2000
+        mode: "0775"
+      loop:
+        - "{{ stack_path }}"
+        - "{{ stack_path }}/config"
+
+    - name: Kopirovani docker-compose.yml na server
+      ansible.builtin.copy:
+        src: "{{ source_path }}/docker-compose.yml"
+        dest: "{{ stack_path }}/docker-compose.yml"
+        owner: ansible
+        group: ansible
+        mode: "0644"
+    
+    - name: Kopirovani konfigurace sluzeb
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ stack_path }}/config/"
+        owner: 1108
+        group: 2000
+        mode: "0644"
+      with_fileglob:
+        - "{{ source_path }}/config/*"
+
+    - name: Instalace systemd sluzby
+      ansible.builtin.template:
+        src: "{{ source_path }}/docker-compose.service.j2"
+        dest: "/etc/systemd/system/{{ stack_name }}.service"
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - Reload systemd
+
+    - name: Nasazeni Homepage stacku
+      community.docker.docker_compose_v2:
+        project_src: "{{ stack_path }}"
+        state: present
+
+    - name: Povoleni a spusteni Homepage sluzby
+      ansible.builtin.systemd:
+        name: "{{ stack_name }}.service"
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true

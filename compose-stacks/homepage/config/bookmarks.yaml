@@ -1,0 +1,18 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/bookmarks
+
+- Blog:
+    - O dva kroky dál:
+        - abbr: BLG
+          href: https://elpytel.github.io/o-dva-kroky-dal/
+
+- Developer:
+    - Github:
+        - abbr: GH
+          href: https://github.com/elPytel
+
+- Social:
+    - Reddit:
+        - abbr: RE
+          href: https://www.reddit.com/user/elPytel/

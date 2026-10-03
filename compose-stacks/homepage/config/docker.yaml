@@ -1,0 +1,4 @@
+---
+docker-runner:
+  host: docker-proxy
+  port: 2375

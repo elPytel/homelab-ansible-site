@@ -1,0 +1,42 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/info-widgets/
+
+- resources:
+    label: Docker runner
+    cpu: true
+    memory: true
+    disk: /
+    units: metric
+
+- search:
+    provider: duckduckgo
+    target: _blank
+
+- resources:
+    label: Data pool
+    expanded: true
+    disk:
+      - /mnt/data
+
+- resources:
+    label: Movies pool
+    expanded: true
+    disk:
+      - /mnt/movies
+
+- datetime:
+    text_size: xl
+    locale: cz
+    format:
+      dateStyle: long
+      timeStyle: short
+      hourCycle: h23
+
+- openmeteo:
+    label: Liberec
+    latitude: 50.7671
+    longitude: 15.0562
+    timezone: Europe/Prague
+    units: metric
+    cache: 5
