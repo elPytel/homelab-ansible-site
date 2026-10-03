@@ -1,33 +1,16 @@
 ---
-- name: Nasazení Audiobookshelf stacku
+- name: Nasazení Portainer stacku
   hosts: Docker-runner
   become: true
 
   vars:
-    stack_name: audiobookshelf
-    stack_path: /opt/docker-stacks/audiobookshelf
-    source_path: ../../../compose-stacks/audiobookshelf
-    owner_uid: 1106
+    stack_name: portainer
+    stack_path: /opt/docker-stacks/portainer
+    source_path: ../../../compose-stacks/portainer
+    owner_uid: 1109
     owner_gid: 2000
-    data_mount: /mnt/data
-    
 
   tasks:
-    - name: Kontrola, že je SMB disk /mnt/data připojený
-      ansible.builtin.command:
-        cmd: mountpoint -q "{{ data_mount }}"
-      changed_when: false
-
-    - name: Nastavení práv a SGID bitu na složkách Audiobookshelf na SMB
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-        owner: "{{ owner_uid }}"
-        group: "{{ owner_gid }}"
-        mode: "2775"
-      loop:
-        - "{{ data_mount }}/Audio knihy"
-        - "{{ data_mount }}/Podcasts"
 
     - name: Vytvoření lokální složky pro compose stack a konfiguraci
       ansible.builtin.file:
@@ -38,8 +21,7 @@
         mode: "0775"
       loop:
         - "{{ stack_path }}"
-        - "{{ stack_path }}/config"
-        - "{{ stack_path }}/metadata"
+        - "{{ stack_path }}/data"
 
     - name: Kopírování docker-compose.yml na server
       ansible.builtin.copy:
@@ -59,14 +41,10 @@
       notify:
         - Reload systemd
 
-    - name: Nasazení Audiobookshelf stacku
-      community.docker.docker_compose_v2:
-        project_src: "{{ stack_path }}"
-        state: present
-
-    - name: Povolení a spuštění Audiobookshelf služby
+    - name: Povolení a spuštění Portainer služby
       ansible.builtin.systemd:
         name: "{{ stack_name }}.service"
+        daemon_reload: true
         enabled: true
         state: started
 

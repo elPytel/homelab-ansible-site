@@ -8,6 +8,8 @@
     stack_path: /opt/docker-stacks/kavita
     source_path: ../../../compose-stacks/kavita
     data_mount: /mnt/data
+    owner_uid: 1107
+    owner_gid: 2000
 
   tasks:
     - name: Kontrola, že je SMB disk /mnt/data připojený
@@ -19,16 +21,16 @@
       ansible.builtin.file:
         path: "{{ data_mount }}/Knihy"
         state: directory
-        owner: 1107
-        group: 2000
+        owner: "{{ owner_uid }}"
+        group: "{{ owner_gid }}"
         mode: "2775"
 
     - name: Vytvoření lokální složky pro compose stack a konfiguraci
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-        owner: 1107
-        group: 2000
+        owner: "{{ owner_uid }}"
+        group: "{{ owner_gid }}"
         mode: "0775"
       loop:
         - "{{ stack_path }}"

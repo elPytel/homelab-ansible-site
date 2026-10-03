@@ -1,0 +1,18 @@
+[Unit]
+Description={{ stack_name }} Docker Stack
+
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory={{ stack_path }}
+
+ExecStart=/usr/bin/docker compose -f {{ stack_path }}/docker-compose.yml up -d
+
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target

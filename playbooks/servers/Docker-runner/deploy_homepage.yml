@@ -10,6 +10,8 @@
     mount:
       data: /mnt/data
       series: /mnt/movies
+    owner_uid: 1108
+    owner_gid: 2000
 
   tasks:
     - name: Kontrola, že jsou SMB disky připojené
@@ -27,8 +29,8 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-        owner: 1108
-        group: 2000
+        owner: "{{ owner_uid }}"
+        group: "{{ owner_gid }}"
         mode: "0775"
       loop:
         - "{{ stack_path }}"
@@ -46,8 +48,8 @@
       ansible.builtin.copy:
         src: "{{ item }}"
         dest: "{{ stack_path }}/config/"
-        owner: 1108
-        group: 2000
+        owner: "{{ owner_uid }}"
+        group: "{{ owner_gid }}"
         mode: "0644"
       with_fileglob:
         - "{{ source_path }}/config/*"
