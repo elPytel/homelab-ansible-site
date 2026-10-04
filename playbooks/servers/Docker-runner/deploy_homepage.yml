@@ -57,7 +57,17 @@
         group: "{{ owner_gid }}"
         mode: "0644"
       with_fileglob:
-        - "{{ source_path }}/config/*"
+        - "{{ source_path }}/config/*.yaml"
+
+    - name: Vyrenderovani Jinja konfigurace sluzeb
+      ansible.builtin.template:
+        src: "{{ item }}"
+        dest: "{{ stack_path }}/config/{{ item | basename | regex_replace('\\.j2$', '') }}"
+        owner: "{{ owner_uid }}"
+        group: "{{ owner_gid }}"
+        mode: "0644"
+      with_fileglob:
+        - "{{ source_path }}/config/*.j2"
 
     - name: Instalace systemd sluzby
       ansible.builtin.template:
