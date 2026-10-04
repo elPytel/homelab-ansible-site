@@ -37,6 +37,26 @@
         group: "{{ owner_gid }}"
         mode: "2775"
 
+    - name: Rekurzivni sjednoceni vlastnika a skupiny ROMM knihovny
+      ansible.builtin.file:
+        path: "{{ library_path }}"
+        state: directory
+        owner: "{{ owner_uid }}"
+        group: "{{ owner_gid }}"
+        recurse: true
+
+    - name: Nastaveni prav adresaru ROMM knihovny (SGID)
+      ansible.builtin.command:
+        # Vyhleda jen adresare, ktere nemaji prava 2775, a zmeni je
+        cmd: find "{{ library_path }}" -type d ! -perm 2775 -exec chmod 2775 {} +
+      changed_when: false
+
+    - name: Nastaveni prav souboru ROMM knihovny
+      ansible.builtin.command:
+        # Vyhleda jen soubory, ktere nemaji prava 0664, a zmeni je
+        cmd: find "{{ library_path }}" -type f ! -perm 0664 -exec chmod 0664 {} +
+      changed_when: false
+
     - name: Vytvoření lokálních složek ROMM stacku
       ansible.builtin.file:
         path: "{{ item }}"

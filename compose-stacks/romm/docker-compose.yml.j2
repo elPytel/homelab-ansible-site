@@ -17,17 +17,13 @@ services:
       - {{ stack_path }}/resources:/romm/resources
       - {{ stack_path }}/config:/romm/config
       - {{ stack_path }}/assets:/romm/assets
-      - {{ library_path }}:/romm/library
+      - {{ library_path }}:/romm/library/
     ports:
       - {{ romm_port }}:8080
     depends_on:
       - romm-db
       - romm-redis
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
 
   romm-db:
     image: {{ database_image }}
@@ -40,6 +36,10 @@ services:
     volumes:
       - {{ stack_path }}/db:/var/lib/mysql
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
     healthcheck:
       test: [CMD, healthcheck.sh, --connect, --innodb_initialized]
       start_period: 30s

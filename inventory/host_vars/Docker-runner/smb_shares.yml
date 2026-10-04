@@ -19,8 +19,8 @@ smb_shares:
     uid: "root"
     gid: "media_shared"
     group_id: 2000
-    dir_mode: "0770"
-    file_mode: "0660"
+    dir_mode: "0775"
+    file_mode: "0664"
     allowed_users:
       - ansible
 
