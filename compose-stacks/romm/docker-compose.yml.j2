@@ -1,0 +1,58 @@
+services:
+  romm:
+    image: {{ romm_image }}
+    container_name: romm
+    environment:
+      - TZ={{ timezone }}
+      - PUID={{ owner_uid }}
+      - PGID={{ owner_gid }}
+      - DB_HOST=romm-db
+      - DB_NAME={{ database_name }}
+      - DB_USER={{ database_user }}
+      - DB_PASSWD={{ database_password }}
+      - SCREENSCRAPER_USER={{ screen_scraper_user }}
+      - SCREENSCRAPER_PASSWORD={{ screen_scraper_password }}
+      - REDIS_HOST=romm-redis
+    volumes:
+      - {{ stack_path }}/resources:/romm/resources
+      - {{ stack_path }}/config:/romm/config
+      - {{ stack_path }}/assets:/romm/assets
+      - {{ library_path }}:/romm/library
+    ports:
+      - {{ romm_port }}:8080
+    depends_on:
+      - romm-db
+      - romm-redis
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+
+  romm-db:
+    image: {{ database_image }}
+    container_name: romm-db
+    environment:
+      - MARIADB_ROOT_PASSWORD={{ database_root_password }}
+      - MARIADB_DATABASE={{ database_name }}
+      - MARIADB_USER={{ database_user }}
+      - MARIADB_PASSWORD={{ database_password }}
+    volumes:
+      - {{ stack_path }}/db:/var/lib/mysql
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, healthcheck.sh, --connect, --innodb_initialized]
+      start_period: 30s
+      start_interval: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  romm-redis:
+    image: {{ redis_image }}
+    container_name: romm-redis
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'

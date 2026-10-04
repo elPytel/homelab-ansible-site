@@ -1,0 +1,90 @@
+---
+- name: Nasazení ROMM stacku
+  hosts: Docker-runner
+  become: true
+
+  vars:
+    stack_name: romm
+    stack_path: /opt/docker-stacks/romm
+    source_path: ../../../compose-stacks/romm
+    data_mount: /mnt/data
+    library_path: /mnt/data/RomM
+    owner_uid: 1110
+    owner_gid: 2000
+    romm_image: rommapp/romm:latest
+    database_image: mariadb:11
+    redis_image: redis:7-alpine
+    timezone: Europe/Prague
+    romm_port: 8081
+    database_name: romm
+    database_user: romm
+    database_password: "{{ vault_romm_db_password }}"
+    screen_scraper_user: elPytel
+    screen_scraper_password: "{{ vault_screen_scraper_password }}"
+    database_root_password: "{{ vault_romm_db_root_password }}"
+
+  tasks:
+    - name: Kontrola, že je ROMM datový disk připojený
+      ansible.builtin.command:
+        cmd: mountpoint -q "{{ data_mount }}"
+      changed_when: false
+
+    - name: Nastavení práv a SGID bitu na ROMM knihovně
+      ansible.builtin.file:
+        path: "{{ library_path }}"
+        state: directory
+        owner: "{{ owner_uid }}"
+        group: "{{ owner_gid }}"
+        mode: "2775"
+
+    - name: Vytvoření lokálních složek ROMM stacku
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ owner_uid }}"
+        group: "{{ owner_gid }}"
+        mode: "0775"
+      loop:
+        - "{{ stack_path }}"
+        - "{{ stack_path }}/config"
+        - "{{ stack_path }}/resources"
+        - "{{ stack_path }}/assets"
+        - "{{ stack_path }}/db"
+
+    - name: Vyrenderovani ROMM docker-compose.yml
+      ansible.builtin.template:
+        src: "{{ source_path }}/docker-compose.yml.j2"
+        dest: "{{ stack_path }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: "0600"
+      notify:
+        - Restart ROMM service
+
+    - name: Instalace ROMM systemd služby
+      ansible.builtin.template:
+        src: "{{ source_path }}/docker-compose.service.j2"
+        dest: "/etc/systemd/system/{{ stack_name }}.service"
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - Reload systemd
+        - Restart ROMM service
+
+    - name: Povolení a spuštění ROMM služby
+      ansible.builtin.systemd:
+        name: "{{ stack_name }}.service"
+        daemon_reload: true
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Restart ROMM service
+      ansible.builtin.systemd:
+        name: "{{ stack_name }}.service"
+        state: restarted
