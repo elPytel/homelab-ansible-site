@@ -1,0 +1,86 @@
+---
+- Infrastructure:
+
+  - "T-mobile router":
+      icon: si-tmobile
+      href: https://192.168.1.1
+      description: T-mobile pristupovy bod
+      ping: 192.168.1.1
+  
+  - Proxmox:
+      icon: proxmox.png
+      href: https://192.168.1.100:8006
+      description: Virtualizace a kontejnery
+      ping: 192.168.1.100
+      widget:
+        type: proxmox
+        url: https://192.168.1.100:8006
+        username: root@pam!Homepage
+        password: {{ proxmox_secret_token }}
+        node: zalman
+        ignoreTls: true
+  
+  - Portainer:
+      icon: si-portainer
+      href: http://192.168.1.101:9000
+      description: Sprava Docker kontejneru
+      server: docker-runner
+      container: portainer
+      widget:
+        type: portainer
+        url: http://192.168.1.101:9000
+        env: 4
+        key: {{ portainer_secret_token }}
+
+- Media:
+  - Audiobookshelf:
+      icon: audiobookshelf.png
+      href: http://192.168.1.101:13378
+      description: Audioknihy a podcasty
+      server: docker-runner
+      container: audiobookshelf
+      widget:
+        type: audiobookshelf
+        url: http://192.168.1.101:13378
+        key: {{ audiobookshelf_secret_token }}
+
+  - Jellyfin:
+      icon: jellyfin.png
+      href: http://192.168.1.101:8096
+      description: Filmy a serialy
+      server: docker-runner
+      container: jellyfin
+      widget:
+        type: jellyfin
+        url: http://192.168.1.101:8096
+        key: {{ jellyfin_secret_token }}
+        version: 2
+        enableBlocks: true
+        enableNowPlaying: true
+        enableUser: true
+
+  - Kavita:
+      icon: kavita.png
+      href: http://192.168.1.101:5000
+      server: docker-runner
+      description: E-knihy a komiksy
+      container: kavita
+      widget:
+        type: kavita
+        url: http://192.168.1.101:5000
+        key: {{ kavita_secret_token }}
+
+- Games:
+  - RomM:
+      icon: si-nintendo
+      href: http://192.168.1.101:8081
+      description: Knihovna retro her
+      server: docker-runner
+      container: romm
+
+- AI modely:
+  - OpenWebUI:
+      icon: open-webui.png
+      href: http://192.168.1.84:3000
+      description: Frontend pro lokalni LLM
+      ping: http://192.168.1.84:3000

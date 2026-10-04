@@ -12,6 +12,11 @@
       series: /mnt/movies
     owner_uid: 1108
     owner_gid: 2000
+    proxmox_secret_token: "{{ vault_proxmox_secret_token }}"
+    portainer_secret_token: "{{ vault_portainer_secret_token }}"
+    audiobookshelf_secret_token: "{{ vault_audiobookshelf_secret_token }}"
+    jellyfin_secret_token: "{{ vault_jellyfin_secret_token }}"
+    kavita_secret_token: "{{ vault_kavita_secret_token }}"
 
   tasks:
     - name: Kontrola, že jsou SMB disky připojené
