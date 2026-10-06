@@ -9,7 +9,11 @@ services:
       - PUID=1101
       - PGID=2000
       - TZ=Europe/Prague
-
+    
+    devices:
+      # Direct access to QuickSync transcoding device
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    
     ports:
       - "8096:8096"
 

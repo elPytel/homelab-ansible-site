@@ -1,0 +1,57 @@
+- name: Configure Intel iGPU passthrough for Jellyfin and Docker
+  hosts: Docker-runner
+  become: true
+  vars:
+    docker_user: ansible
+    igpu_packages:
+      - intel-media-va-driver-non-free
+      - vainfo
+      - intel-gpu-tools
+
+  tasks:
+
+    - name: Verify /dev/dri exists
+      ansible.builtin.stat:
+        path: /dev/dri/renderD128
+      register: dri_render_device
+      failed_when: not dri_render_device.stat.exists
+
+    - name: Ensure GnuPG is available for repository management
+      ansible.builtin.apt:
+        name: gnupg
+        state: present
+        update_cache: true
+
+    - name: Ensure non-free repository components are enabled
+      ansible.builtin.apt_repository:
+        repo: "deb http://deb.debian.org/debian {{ ansible_facts['distribution_release'] }} main contrib non-free non-free-firmware"
+        state: present
+        update_cache: true
+
+    - name: Ensure non-free updates repository is enabled
+      ansible.builtin.apt_repository:
+        repo: "deb http://deb.debian.org/debian {{ ansible_facts['distribution_release'] }}-updates main contrib non-free non-free-firmware"
+        state: present
+
+    - name: Install Intel media drivers and diagnostic tools
+      ansible.builtin.apt:
+        name: "{{ igpu_packages }}"
+        state: present
+
+    - name: Add Docker user to video and render groups
+      ansible.builtin.user:
+        name: "{{ docker_user }}"
+        groups:
+          - video
+          - render
+        append: true
+
+    - name: Check VA-API support via vainfo
+      ansible.builtin.command: vainfo
+      register: vainfo_output
+      changed_when: false
+      failed_when: "'VAProfileH264' not in vainfo_output.stdout"
+
+    - name: Display detected VA-API profiles
+      ansible.builtin.debug:
+        msg: "VA-API is active. Driver found: {{ vainfo_output.stdout_lines[1] | default('OK') }}"
