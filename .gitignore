@@ -27,3 +27,6 @@ galaxy_token
 # make flags
 install
 .syntax-checks
+
+# Nix
+.direnv/

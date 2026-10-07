@@ -1,5 +1,40 @@
 # Homelab Ansible Site
 
+## Použití Nix
+
+```bash
+sudo apt install nix-bin
+sudo usermod -aG nix-users $USER
+newgrp nix-users
+sudo systemctl restart nix-daemon.service
+```
+
+Pro automatické spuštění vývojového prostředí je potřeba mít nainstalovaný `direnv` a upravit soubor `~/.bashrc`:
+```bash
+sudo apt install direnv
+echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+Povolení experimentálních funkcí Nix:
+```bash
+mkdir -p ~/.config/nix
+echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+```
+
+Aktualikace flake závislostí:
+```bash
+nix flake update
+```
+
+Manuální spuštění vývojového prostředí:
+```bash
+nix develop
+```
+
+> [!tip]
+> Pro ukončení vývojového prostředí použijte příkaz `exit`.
+
 ## Inicializace pracovního prostředí
 Jak inicializovat repo [Ansible Site](./DOC/Ansible_Site.md).
 
