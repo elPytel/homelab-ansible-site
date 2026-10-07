@@ -50,7 +50,7 @@ $(CHECK_DIR)/%.yml.ok: %.yml
 ANSIBLE-PLAYBOOK-SYNTAX-CHECK := Check the syntax of all Ansible playbooks in the repository
 ansible-playbook-syntax-check: CHECK_DIR
 	@printf "$(YELLOW)Running ansible-playbook syntax check...$(RESET)\n"
-	@$(MAKE) --output-sync=target -j20 $(CHECKS) || { printf "$(RED)Ansible playbook syntax check failed.$(RESET)\n"; exit 1; }
+	@$(MAKE) --output-sync=target -j 20 $(CHECKS) || { printf "$(RED)Ansible playbook syntax check failed.$(RESET)\n"; exit 1; }
 	@printf "$(GREEN)All Ansible playbook syntax checks passed.$(RESET)\n"
 
 LINT := Run all linting checks (yaml-lint, ansible-lint, and ansible-playbook syntax check)
