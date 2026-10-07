@@ -35,6 +35,13 @@ nix develop
 > [!tip]
 > Pro ukončení vývojového prostředí použijte příkaz `exit`.
 
+Pokud chcete použít `dev` upravte soubor `.envrc`:
+```txt
+# .envrc
+export ANSIBLESITE_PROFILE="dev"
+use flake
+```
+
 ## Inicializace pracovního prostředí
 Jak inicializovat repo [Ansible Site](./DOC/Ansible_Site.md).
 

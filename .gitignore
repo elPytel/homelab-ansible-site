@@ -30,3 +30,4 @@ install
 
 # Nix
 .direnv/
+.envrc.local
